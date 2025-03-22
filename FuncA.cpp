@@ -1,6 +1,9 @@
 #include "FuncA.h"
 #include <cmath>
 
+// Constructor implementation
+FuncA::FuncA(double value) : x(value) {}
+
 // Обчислення суми перших n членів ряду
 double FuncA::calculate(int n) {
     double sum = 0;

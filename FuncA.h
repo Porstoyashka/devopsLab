@@ -2,7 +2,16 @@
 #define FUNCA_H
 
 class FuncA {
+private:
+    double x;
+
 public:
+    /**
+     * Constructor
+     * @param value - значення x для обчислення ряду
+     */
+    FuncA(double value = 0.5);
+
     /**
      * Обчислення суми перших n членів ряду
      * @param n - кількість членів, які потрібно підсумувати
