@@ -16,4 +16,7 @@ jobs:
         run: sudo apt update && sudo apt install -y automake autoconf
 
       - name: Generate build system
-        run: autoreconf --install && ./configure && make check && ./test_FuncA
+        run: autoreconf --install && ./configure && make check
+
+      - name: Run tests
+        run: ./test_FuncA
