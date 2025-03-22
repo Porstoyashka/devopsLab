@@ -2,44 +2,18 @@ name: C/C++ CI
 
 on:
   push:
-    branches: ["branchAutoPackage"]
+    branches: ["branchAutoTest"]
   pull_request:
-    branches: ["branchAutoPackage"]
+    branches: ["branchAutoTest"]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y g++ make autoconf automake dpkg-dev debhelper build-essential
+        run: sudo apt update && sudo apt install -y automake autoconf
 
       - name: Generate build system
-        run: |
-          autoreconf --install
-          ./configure
-          
-      - name: Build program
-        run: make
-        
-      - name: Create distribution
-        run: make dist
-        
-      - name: Upload tarball
-        uses: actions/upload-artifact@v4
-        with:
-          name: program-dist
-          path: program-*.tar.gz
-
-      - name: Build Debian Package
-        run: dpkg-buildpackage -us -uc
-
-      - name: Move Debian Package
-        run: mv ../program_1.0-1_amd64.deb .
-
-      - name: Upload Debian Package
-        uses: actions/upload-artifact@v4
-        with:
-          name: deb_prog
-          path: program_1.0-1_amd64.deb
+        run: autoreconf --install && ./configure && make check && ./test_FuncA
