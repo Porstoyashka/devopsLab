@@ -20,3 +20,29 @@ jobs:
 
       - name: Run tests
         run: ./test_FuncA
+
+    # Install QEMU for cross-platform builds
+      - name: QEMU install
+        uses: docker/setup-qemu-action@v3
+
+    # Install Docker Buildx for multi-platform builds
+      - name: Install Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+    # List available buildx builders
+      - name: build ls
+        run: docker buildx ls
+
+      - name: Log in to dockerhub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Dockerfile image for amd64
+        run: docker build --platform=linux/amd64 -t maxkostenko/httpserver:amd64 --push .
+
+      - name: Build Dockerfile image for arm64
+        run: docker build --platform=linux/arm64 -t maxkostenko/httpserver:arm64 --push .
+
+      - name: Create manifest
+        run: docker manifest create maxkostenko/httpserver --amend maxkostenko/httpserver:amd64 --amend maxkostenko/httpserver:arm64
+      - name: Push manifest to docker hub
+        run: docker manifest push maxkostenko/httpserver
