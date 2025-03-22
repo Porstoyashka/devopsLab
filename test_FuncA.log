@@ -1,0 +1,5 @@
+Basic FuncA test passed!
+Running performance test...
+Computation time: 11574 ms, Result: 9.83626e+08
+Performance test passed! Execution time is within expected range (10-20 seconds).
+PASS test_FuncA (exit status: 0)

@@ -1,8 +1,12 @@
 #include <iostream>
 #include "FuncA.h"
 
+// Declaration for the HTTP server function from HTTP_Server.cpp
+int CreateHTTPserver();
+
 int main() {
-    FuncA func;
-    std::cout << "FuncA result: " << func.calculate(10) << std::endl;
-    return 0;
+    std::cout << "Starting HTTP Server on port 8081..." << std::endl;
+    
+    // Call the HTTP server function
+    return CreateHTTPserver();
 }
