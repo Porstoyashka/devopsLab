@@ -1,11 +1,11 @@
 #include "FuncA.h"
 #include <cmath>
 
-double FuncA::calculate() {
-    int n = 3;
+// Обчислення суми перших n членів ряду
+double FuncA::calculate(int n) {
     double sum = 0;
     for (int i = 0; i < n; i++) {
-        sum += pow(x, i);
+        sum += pow(x, i); // Формула ряду
     }
     return sum;
 }
