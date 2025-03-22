@@ -1,0 +1,10 @@
+Source: program
+Section: utils
+Priority: optional
+Maintainer: Your Name <maksym33kostenko@gmail.com>
+Build-Depends: debhelper-compat (= 12), autotools-dev
+
+Package: program
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: C++ program implementing FuncA

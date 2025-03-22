@@ -101,9 +101,11 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_program_OBJECTS = main.$(OBJEXT) FuncA.$(OBJEXT)
+am_program_OBJECTS = program-main.$(OBJEXT) program-FuncA.$(OBJEXT)
 program_OBJECTS = $(am_program_OBJECTS)
 program_LDADD = $(LDADD)
+program_LINK = $(CXXLD) $(program_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_$(V))
 am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))
 am__v_P_0 = false
@@ -119,8 +121,13 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/FuncA.Po ./$(DEPDIR)/main.Po
+am__depfiles_remade = ./$(DEPDIR)/program-FuncA.Po \
+	./$(DEPDIR)/program-main.Po
 am__mv = mv -f
+AM_V_lt = $(am__v_lt_$(V))
+am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
+am__v_lt_0 = --silent
+am__v_lt_1 = 
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 AM_V_CXX = $(am__v_CXX_$(V))
@@ -199,12 +206,12 @@ AUTOCONF = ${SHELL} '/home/rpjc/Documents/maxKostenko/devopsLab/missing' autocon
 AUTOHEADER = ${SHELL} '/home/rpjc/Documents/maxKostenko/devopsLab/missing' autoheader
 AUTOMAKE = ${SHELL} '/home/rpjc/Documents/maxKostenko/devopsLab/missing' automake-1.16
 AWK = mawk
-CPPFLAGS = 
+CPPFLAGS = -Wdate-time -D_FORTIFY_SOURCE=2
 CSCOPE = cscope
 CTAGS = ctags
 CXX = g++
-CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -g -O2
+CXXDEPMODE = depmode=none
+CXXFLAGS = -g -O2 -ffile-prefix-map=/home/rpjc/Documents/maxKostenko/devopsLab=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security
 CYGPATH_W = echo
 DEFS = -DPACKAGE_NAME=\"program\" -DPACKAGE_TARNAME=\"program\" -DPACKAGE_VERSION=\"1.0\" -DPACKAGE_STRING=\"program\ 1.0\" -DPACKAGE_BUGREPORT=\"maksym33kostenko@gmail.com\" -DPACKAGE_URL=\"\" -DPACKAGE=\"program\" -DVERSION=\"1.0\"
 DEPDIR = .deps
@@ -218,7 +225,7 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
-LDFLAGS = 
+LDFLAGS = -Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -flto=auto -Wl,-z,relro
 LIBOBJS = 
 LIBS = 
 LTLIBOBJS = 
@@ -248,7 +255,7 @@ am__quote =
 am__tar = $${TAR-tar} chof - "$$tardir"
 am__untar = $${TAR-tar} xf -
 bindir = ${exec_prefix}/bin
-build_alias = 
+build_alias = x86_64-linux-gnu
 builddir = .
 datadir = ${datarootdir}
 datarootdir = ${prefix}/share
@@ -258,30 +265,31 @@ exec_prefix = ${prefix}
 host_alias = 
 htmldir = ${docdir}
 includedir = ${prefix}/include
-infodir = ${datarootdir}/info
+infodir = ${prefix}/share/info
 install_sh = ${SHELL} /home/rpjc/Documents/maxKostenko/devopsLab/install-sh
-libdir = ${exec_prefix}/lib
+libdir = ${prefix}/lib/x86_64-linux-gnu
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
-localstatedir = ${prefix}/var
-mandir = ${datarootdir}/man
+localstatedir = /var
+mandir = ${prefix}/share/man
 mkdir_p = $(MKDIR_P)
 oldincludedir = /usr/include
 pdfdir = ${docdir}
-prefix = /usr/local
+prefix = /usr
 program_transform_name = s,x,x,
 psdir = ${docdir}
-runstatedir = ${localstatedir}/run
+runstatedir = /run
 sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
 srcdir = .
-sysconfdir = ${prefix}/etc
+sysconfdir = /etc
 target_alias = 
 top_build_prefix = 
 top_builddir = .
 top_srcdir = .
 AUTOMAKE_OPTIONS = foreign
 program_SOURCES = main.cpp FuncA.cpp FuncA.h
+program_CXXFLAGS = -fno-lto
 EXTRA_DIST = Makefile.am
 all: all-am
 
@@ -365,7 +373,7 @@ clean-binPROGRAMS:
 
 program$(EXEEXT): $(program_OBJECTS) $(program_DEPENDENCIES) $(EXTRA_program_DEPENDENCIES) 
 	@rm -f program$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(program_OBJECTS) $(program_LDADD) $(LIBS)
+	$(AM_V_CXXLD)$(program_LINK) $(program_OBJECTS) $(program_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -373,8 +381,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-include ./$(DEPDIR)/FuncA.Po # am--include-marker
-include ./$(DEPDIR)/main.Po # am--include-marker
+#include ./$(DEPDIR)/program-FuncA.Po # am--include-marker
+#include ./$(DEPDIR)/program-main.Po # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -383,18 +391,46 @@ $(am__depfiles_remade):
 am--depfiles: $(am__depfiles_remade)
 
 .cpp.o:
-	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-#	$(AM_V_CXX)source='$<' object='$@' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(AM_V_CXX_no)$(CXXCOMPILE) -c -o $@ $<
+#	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+#	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+#	$(AM_V_CXX)source='$<' object='$@' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) 
+	$(AM_V_CXX)$(CXXCOMPILE) -c -o $@ $<
 
 .cpp.obj:
-	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-#	$(AM_V_CXX)source='$<' object='$@' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(AM_V_CXX_no)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+#	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+#	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+#	$(AM_V_CXX)source='$<' object='$@' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) 
+	$(AM_V_CXX)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+program-main.o: main.cpp
+#	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(program_CXXFLAGS) $(CXXFLAGS) -MT program-main.o -MD -MP -MF $(DEPDIR)/program-main.Tpo -c -o program-main.o `test -f 'main.cpp' || echo '$(srcdir)/'`main.cpp
+#	$(AM_V_at)$(am__mv) $(DEPDIR)/program-main.Tpo $(DEPDIR)/program-main.Po
+#	$(AM_V_CXX)source='main.cpp' object='program-main.o' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) 
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(program_CXXFLAGS) $(CXXFLAGS) -c -o program-main.o `test -f 'main.cpp' || echo '$(srcdir)/'`main.cpp
+
+program-main.obj: main.cpp
+#	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(program_CXXFLAGS) $(CXXFLAGS) -MT program-main.obj -MD -MP -MF $(DEPDIR)/program-main.Tpo -c -o program-main.obj `if test -f 'main.cpp'; then $(CYGPATH_W) 'main.cpp'; else $(CYGPATH_W) '$(srcdir)/main.cpp'; fi`
+#	$(AM_V_at)$(am__mv) $(DEPDIR)/program-main.Tpo $(DEPDIR)/program-main.Po
+#	$(AM_V_CXX)source='main.cpp' object='program-main.obj' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) 
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(program_CXXFLAGS) $(CXXFLAGS) -c -o program-main.obj `if test -f 'main.cpp'; then $(CYGPATH_W) 'main.cpp'; else $(CYGPATH_W) '$(srcdir)/main.cpp'; fi`
+
+program-FuncA.o: FuncA.cpp
+#	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(program_CXXFLAGS) $(CXXFLAGS) -MT program-FuncA.o -MD -MP -MF $(DEPDIR)/program-FuncA.Tpo -c -o program-FuncA.o `test -f 'FuncA.cpp' || echo '$(srcdir)/'`FuncA.cpp
+#	$(AM_V_at)$(am__mv) $(DEPDIR)/program-FuncA.Tpo $(DEPDIR)/program-FuncA.Po
+#	$(AM_V_CXX)source='FuncA.cpp' object='program-FuncA.o' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) 
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(program_CXXFLAGS) $(CXXFLAGS) -c -o program-FuncA.o `test -f 'FuncA.cpp' || echo '$(srcdir)/'`FuncA.cpp
+
+program-FuncA.obj: FuncA.cpp
+#	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(program_CXXFLAGS) $(CXXFLAGS) -MT program-FuncA.obj -MD -MP -MF $(DEPDIR)/program-FuncA.Tpo -c -o program-FuncA.obj `if test -f 'FuncA.cpp'; then $(CYGPATH_W) 'FuncA.cpp'; else $(CYGPATH_W) '$(srcdir)/FuncA.cpp'; fi`
+#	$(AM_V_at)$(am__mv) $(DEPDIR)/program-FuncA.Tpo $(DEPDIR)/program-FuncA.Po
+#	$(AM_V_CXX)source='FuncA.cpp' object='program-FuncA.obj' libtool=no 
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) 
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(program_CXXFLAGS) $(CXXFLAGS) -c -o program-FuncA.obj `if test -f 'FuncA.cpp'; then $(CYGPATH_W) 'FuncA.cpp'; else $(CYGPATH_W) '$(srcdir)/FuncA.cpp'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -669,8 +705,8 @@ clean-am: clean-binPROGRAMS clean-generic mostlyclean-am
 
 distclean: distclean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
-		-rm -f ./$(DEPDIR)/FuncA.Po
-	-rm -f ./$(DEPDIR)/main.Po
+		-rm -f ./$(DEPDIR)/program-FuncA.Po
+	-rm -f ./$(DEPDIR)/program-main.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -718,8 +754,8 @@ installcheck-am:
 maintainer-clean: maintainer-clean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf $(top_srcdir)/autom4te.cache
-		-rm -f ./$(DEPDIR)/FuncA.Po
-	-rm -f ./$(DEPDIR)/main.Po
+		-rm -f ./$(DEPDIR)/program-FuncA.Po
+	-rm -f ./$(DEPDIR)/program-main.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
